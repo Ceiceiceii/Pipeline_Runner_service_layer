@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pipeline-runner-takehome"
+version = "0.1.0"
+description = "HILOS Lead Platform Engineer take-home starter kit: simulated AI pipelines, a costed GPU worker pool, and a bursty workload generator."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.6",
+    "pydantic-settings>=2.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.4",
+    "mypy>=1.9",
+]
+
+[tool.setuptools]
+packages = ["pipeline_kit"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D203",    # one-blank-line-before-class (conflicts with D211)
+    "D213",    # multi-line-summary-second-line (conflicts with D212)
+    "COM812",  # trailing comma (handled by the formatter)
+    "E501",    # line length (handled by the formatter)
+    "EM101",   # exception with string literal
+    "EM102",   # exception with f-string
+    "TRY003",  # long messages outside the exception class
+    "FBT001",  # boolean-typed positional argument (we use flags deliberately)
+    "FBT002",  # boolean default positional argument
+    "S311",    # pseudo-random generators — intentional for simulation
+    "A003",    # class attribute shadows a builtin (`id` is the natural field name)
+    "PLR0913", # many keyword args on constructors (explicit knobs, not a smell)
+    "D105",    # docstrings on magic methods
+    "D107",    # docstrings on __init__ (documented at class level)
+    "TD002",   # missing TODO author
+    "TD003",   # missing TODO link
+    "FIX002",  # line contains TODO
+    "PLR2004", # magic value used in comparison
+    "CPY001",  # missing copyright notice
+    "TC001",   # type-only first-party imports in a TYPE_CHECKING block (boilerplate)
+    "TC002",   # (same) for third-party imports
+    "TC003",   # (same) for stdlib imports
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "INP001", "D100", "D101", "D102", "D103", "D104", "D401", "ANN001", "ANN201", "ANN202", "SLF001", "PLR2004", "PLC2701"]
+"pipeline_kit/demo.py" = ["T201"]      # the demo prints a human-readable report
+"pipeline_kit/__main__.py" = ["T201"]  # the CLI prints the schedule preview
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
+plugins = ["pydantic.mypy"]
