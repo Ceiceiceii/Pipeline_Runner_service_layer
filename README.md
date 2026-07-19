@@ -1,9 +1,7 @@
 # Pipeline Runner — Take-Home Starter Kit
 
 This repo is the **starter kit** for the HILOS Lead Platform Engineer take-home,
-*The Pipeline Runner*. It gives you a realistic, fully local simulation of
-HILOS's footwear-asset pipeline so you can spend your day on the hard part —
-**the service layer** — instead of on scaffolding.
+*The Pipeline Runner*, plus the submitted **service layer** built on top of it.
 
 👉 **Read [`CHALLENGE.md`](./CHALLENGE.md) first.** It is the brief: what to
 build, how we evaluate, and the deliverables (`DESIGN.md` and a README).
@@ -13,35 +11,9 @@ build, how we evaluate, and the deliverables (`DESIGN.md` and a README).
 ## The service (submission)
 
 The service layer lives in [`service/`](./service); the design and its defense
-are in [`DESIGN.md`](./DESIGN.md), and a plain-language tour — what the kit
-simulates, what the raw no-service baseline does, and what each layer adds —
-is in [`EXPLAINER.md`](./EXPLAINER.md). The kit is untouched.
-
-```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -e ".[dev,api]"
-
-pytest -q                        # kit trust tests + all service tests
-
-# Policy-comparison harness (the deep-dive's evidence; instant, virtual clock)
-python -m service.harness                      # default saturated bursts
-python -m service.harness --scenario sparse    # idle-dominated: keep-warm regime
-python -m service.harness --scenario chaos     # 30% GPU failure: retry economics
-
-# Run the API (time compression via the kit's env knobs; 50x makes a
-# 45s cold start take ~1s of real time)
-PIPELINE_KIT_TIME_SCALE=50 uvicorn --factory service.api:create_app
-
-# Talk to it
-curl -X POST localhost:8000/jobs -H 'content-type: application/json' \
-     -d '{"chain": "full", "image": {"id": "photo-1"}}'
-curl localhost:8000/jobs/<job_id>          # status + per-step progress
-curl localhost:8000/jobs/<job_id>/trace    # end-to-end timeline with $ per step
-curl localhost:8000/jobs/<job_id>/events   # SSE stream of state changes
-curl localhost:8000/metrics                # p50/p95, queue depth, utilization, $
-curl localhost:8000/system                 # should-I-submit-now signal
-curl localhost:8000/agent/tools            # the agent contract (4 tools)
-```
+— architecture, the GPU cost policy and its math, the deep-dive, tradeoffs,
+deliberate skips, and the platform/ML boundary — are in
+[`DESIGN.md`](./DESIGN.md). The kit is untouched.
 
 **Endpoints:** `POST /jobs` (202 + job id; 422 invalid chain; 503 + Retry-After
 over capacity) · `GET /jobs` (paginated, filterable) · `GET /jobs/{id}` ·
