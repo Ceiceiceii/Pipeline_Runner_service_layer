@@ -20,9 +20,14 @@ dev = [
     "ruff>=0.4",
     "mypy>=1.9",
 ]
+api = [
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "httpx>=0.27",
+]
 
 [tool.setuptools]
-packages = ["pipeline_kit"]
+packages = ["pipeline_kit", "service"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -60,7 +65,10 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101", "INP001", "D100", "D101", "D102", "D103", "D104", "D401", "ANN001", "ANN201", "ANN202", "SLF001", "PLR2004", "PLC2701"]
+"tests/**" = ["S101", "INP001", "D100", "D101", "D102", "D103", "D104", "D401", "ANN001", "ANN201", "ANN202", "ANN003", "SLF001", "PLR2004", "PLC2701", "PLC0415"]
+"service/**" = ["D102", "ANN401"]        # documented at class level; **fields payloads are dynamic by design
+"service/scheduler.py" = ["D102", "ANN401", "ARG002"]  # the WarmPoolPolicy Protocol fixes decide()'s signature
+"service/harness.py" = ["D102", "ANN401", "T201"]      # the CLI prints its comparison table
 "pipeline_kit/demo.py" = ["T201"]      # the demo prints a human-readable report
 "pipeline_kit/__main__.py" = ["T201"]  # the CLI prints the schedule preview
 
