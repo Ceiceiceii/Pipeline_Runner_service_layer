@@ -8,7 +8,7 @@ build, how we evaluate, and the deliverables (`DESIGN.md` and a README).
 
 ---
 
-## The service (submission)
+## The service
 
 The service layer lives in [`service/`](./service); the design and its defense
 — architecture, the GPU cost policy and its math, the deep-dive, tradeoffs,
